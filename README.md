@@ -1,17 +1,29 @@
-# mini_katalog
+# Mini Katalog
 
-A new Flutter project.
+A product catalog app built with Flutter as part of a mobile development training program.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Product listing with GridView
+- Product detail page with specifications
+- Shopping cart with add/remove
+- Checkout simulation
+- Search and filter products
+- API integration (wantapi.com)
 
-A few resources to get you started if this is your first Flutter project:
+## Tech Stack
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+- Flutter 3.41.4
+- Dart
+- HTTP package for API calls
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Run Locally
+
+```bash
+flutter pub get
+flutter run
+```
+
+## API
+
+Product data is fetched from [wantapi.com/products.php](https://wantapi.com/products.php) for educational purposes.
