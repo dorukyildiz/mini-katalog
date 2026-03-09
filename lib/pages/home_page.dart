@@ -5,6 +5,7 @@ import '../models/product.dart';
 import '../widgets/product_card.dart';
 import 'detail_page.dart';
 import 'cart_page.dart';
+import 'favorites_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   List<Product> products = [];
   List<Product> filtered = [];
   List<Product> cart = [];
+  List<Product> favorites = [];
   final searchController = TextEditingController();
   bool isLoading = true;
   String selectedCategory = 'All';
@@ -72,6 +74,20 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  void toggleFavorite(Product product) {
+    setState(() {
+      if (favorites.any((f) => f.id == product.id)) {
+        favorites.removeWhere((f) => f.id == product.id);
+      } else {
+        favorites.add(product);
+      }
+    });
+  }
+
+  bool isFavorite(Product product) {
+    return favorites.any((f) => f.id == product.id);
+  }
+
   void addToCart(Product product) {
     setState(() {
       cart.add(product);
@@ -90,6 +106,20 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: const Text('Discover'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FavoritesPage(
+                    favorites: favorites,
+                    onToggleFavorite: toggleFavorite,
+                  ),
+                ),
+              );
+            },
+          ),
           Stack(
             alignment: Alignment.topRight,
             children: [
@@ -181,6 +211,8 @@ class _HomePageState extends State<HomePage> {
                 final product = filtered[index];
                 return ProductCard(
                   product: product,
+                  isFavorite: isFavorite(product),
+                  onFavorite: () => toggleFavorite(product),
                   onTap: () async {
                     final result = await Navigator.push(
                       context,
