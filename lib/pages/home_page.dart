@@ -19,11 +19,30 @@ class _HomePageState extends State<HomePage> {
   List<Product> cart = [];
   final searchController = TextEditingController();
   bool isLoading = true;
+  String selectedCategory = 'All';
 
   @override
   void initState() {
     super.initState();
     loadProducts();
+  }
+
+  String getCategory(Product p) {
+    final name = p.name.toLowerCase();
+    if (name.contains('iphone') || name.contains('phone se')) return 'Phone';
+    if (name.contains('macbook')) return 'Laptop';
+    if (name.contains('ipad')) return 'Tablet';
+    if (name.contains('watch')) return 'Watch';
+    if (name.contains('airpods') || name.contains('homepod')) return 'Audio';
+    if (name.contains('imac')) return 'Desktop';
+    if (name.contains('vision')) return 'XR';
+    return 'Other';
+  }
+
+  List<String> get categories {
+    final cats = products.map((p) => getCategory(p)).toSet().toList();
+    cats.sort();
+    return ['All', ...cats];
   }
 
   Future<void> loadProducts() async {
@@ -43,11 +62,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void search(String query) {
+  void applyFilters(String query) {
     setState(() {
-      filtered = products
-          .where((p) => p.name.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      filtered = products.where((p) {
+        final matchesSearch = p.name.toLowerCase().contains(query.toLowerCase());
+        final matchesCategory = selectedCategory == 'All' || getCategory(p) == selectedCategory;
+        return matchesSearch && matchesCategory;
+      }).toList();
     });
   }
 
@@ -110,7 +131,7 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.all(12),
             child: TextField(
               controller: searchController,
-              onChanged: search,
+              onChanged: (q) => applyFilters(q),
               decoration: InputDecoration(
                 hintText: 'Search products...',
                 prefixIcon: const Icon(Icons.search),
@@ -120,6 +141,30 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          SizedBox(
+            height: 40,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                final cat = categories[index];
+                final isSelected = cat == selectedCategory;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: FilterChip(
+                    label: Text(cat),
+                    selected: isSelected,
+                    onSelected: (_) {
+                      setState(() => selectedCategory = cat);
+                      applyFilters(searchController.text);
+                    },
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 8),
           Expanded(
             child: isLoading
                 ? const Center(child: CircularProgressIndicator())
