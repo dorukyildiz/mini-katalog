@@ -6,8 +6,10 @@ A product catalog app built with Flutter as part of a mobile development trainin
 
 - Product listing with GridView
 - Product detail page with specifications
-- Shopping cart with add/remove
+- Shopping cart with add/remove and total price
 - Checkout simulation
+- Favorites page with heart toggle
+- Category filtering
 - Search and filter products
 - API integration (wantapi.com)
 
